@@ -1,42 +1,21 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
 
-// Middleware to parse JSON
-app.use(express.json());
+const PORT = 5000;
 
-// Addition
-app.post('/add', (req, res) => {
-  const { a, b } = req.body;
-  res.json({ result: a + b });
-});
+http.createServer((req, res) => {
+  const filePath = path.join(__dirname, 'calculator.html');
 
-// Subtraction
-app.post('/subtract', (req, res) => {
-  const { a, b } = req.body;
-  res.json({ result: a - b });
-});
-
-// Multiplication
-app.post('/multiply', (req, res) => {
-  const { a, b } = req.body;
-  res.json({ result: a * b });
-});
-
-// Division
-app.post('/divide', (req, res) => {
-  const { a, b } = req.body;
-  if (b === 0) {
-    return res.status(400).json({ error: 'Division by zero not allowed' });
-  }
-  res.json({ result: a / b });
-});
-
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'UP' });
-});
-
-app.listen(port, () => {
-  console.log(`Calculator app running on http://0.0.0.0:${port}`);
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      res.writeHead(500);
+      res.end('Server Error');
+    } else {
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(content, 'utf-8');
+    }
+  });
+}).listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });
