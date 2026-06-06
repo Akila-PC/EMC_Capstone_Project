@@ -1,6 +1,6 @@
 FROM node:20
 WORKDIR /calculator
 COPY calculator.html .
-COPY server.js .
+COPY calculator.js .
 EXPOSE 5000 
 CMD [ "node","calculator.js" ]
